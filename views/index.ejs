@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"><title>Quản Lý Vé</title></head>
+<body class="container mt-4 mb-5">
+    <h2 class="mb-3">Danh Sách Vé Sự Kiện</h2>
+    <div class="d-flex justify-content-between mb-3">
+        <form method="GET" action="/" class="d-flex gap-2">
+            <input type="text" name="search" class="form-control" placeholder="Tìm kiếm..." value="<%= typeof search !== 'undefined' ? search : '' %>">
+            <select name="status" class="form-select" style="max-width: 150px;">
+                <option value="">Tất cả</option>
+                <option value="Upcoming" <%= typeof status !== 'undefined' && status === 'Upcoming' ? 'selected' : '' %>>Upcoming</option>
+                <option value="Sold" <%= typeof status !== 'undefined' && status === 'Sold' ? 'selected' : '' %>>Sold</option>
+                <option value="Cancelled" <%= typeof status !== 'undefined' && status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+            </select>
+            <button class="btn btn-primary" type="submit">Lọc</button>
+        </form>
+        <a href="/add" class="btn btn-success">Thêm Mới</a>
+    </div>
+
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark"><tr><th>Ảnh</th><th>Sự Kiện</th><th>Người Sở Hữu</th><th>Loại</th><th>SL</th><th>Tổng Tiền</th><th>Nhãn</th><th>Thao Tác</th></tr></thead>
+        <tbody>
+            <% tickets.forEach(t => { %>
+                <tr>
+                    <td><% if(t.imageUrl) { %><img src="<%= t.imageUrl %>" width="60" class="img-thumbnail"><% } %></td>
+                    <td><%= t.eventName %></td><td><%= t.holderName %></td><td><%= t.category %></td><td><%= t.quantity %></td>
+                    <td><%= t.finalAmount.toLocaleString() %> đ Vé:<%= t.pricePerTicket.toLocaleString() %></td>
+                    <td><span class="badge <%= t.discountLabel === 'Được giảm giá' ? 'bg-success' : 'bg-secondary' %>"><%= t.discountLabel %></span> <span class="badge bg-dark"><%= t.status %></span></td>
+                    
+                    <td><a href="/edit/<%= t.ticketId %>" class="btn btn-sm btn-warning">Sửa</a> <a href="/delete/<%= t.ticketId %>" class="btn btn-sm btn-danger" onclick="return confirm('Xóa?')">Xóa</a></td>
+                </tr>
+            <% }) %>
+            <% if(tickets.length === 0) { %><tr><td colspan="8" class="text-center">Không tìm thấy vé nào.</td></tr><% } %>
+        </tbody>
+    </table>
+</body>
+</html>
